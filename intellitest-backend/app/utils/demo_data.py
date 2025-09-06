@@ -9,28 +9,38 @@ def create_demo_users(db: Session):
     """Create demo users for testing"""
     
     # Demo Admin
-    admin = User(
-        username="admin",
-        email="admin@demo.com",
-        hashed_password=get_password_hash("admin123"),
-        full_name="Demo Admin",
-        role=UserRole.ADMIN,
-        school_name="Demo School",
-        created_at=datetime.utcnow()
-    )
-    db.add(admin)
+    try:
+        admin = User(
+            username="admin",
+            email="admin@demo.com",
+            hashed_password=get_password_hash("admin123"),
+            full_name="Demo Admin",
+            role=UserRole.ADMIN,
+            school_name="Demo School",
+            created_at=datetime.utcnow()
+        )
+        db.add(admin)
+        db.commit()
+    except Exception as e:
+        print(f"Error creating admin: {e}")
+        db.rollback()
     
     # Demo Teacher
-    teacher = User(
-        username="teacher",
-        email="teacher@demo.com",
-        hashed_password=get_password_hash("teacher123"),
-        full_name="Demo Teacher",
-        role=UserRole.TEACHER,
-        school_name="Demo School",
-        created_at=datetime.utcnow()
-    )
-    db.add(teacher)
+    try:
+        teacher = User(
+            username="teacher",
+            email="teacher@demo.com",
+            hashed_password=get_password_hash("teacher123"),
+            full_name="Demo Teacher",
+            role=UserRole.TEACHER,
+            school_name="Demo School",
+            created_at=datetime.utcnow()
+        )
+        db.add(teacher)
+        db.commit()
+    except Exception as e:
+        print(f"Error creating teacher: {e}")
+        db.rollback()
     
     # Demo Students
     students = [
@@ -41,19 +51,23 @@ def create_demo_users(db: Session):
     ]
     
     for username, email, full_name, class_name in students:
-        student = User(
-            username=username,
-            email=email,
-            hashed_password=get_password_hash("student123"),
-            full_name=full_name,
-            role=UserRole.STUDENT,
-            class_name=class_name,
-            school_name="Demo School",
-            created_at=datetime.utcnow()
-        )
-        db.add(student)
+        try:
+            student = User(
+                username=username,
+                email=email,
+                hashed_password=get_password_hash("student123"),
+                full_name=full_name,
+                role=UserRole.STUDENT,
+                class_name=class_name,
+                school_name="Demo School",
+                created_at=datetime.utcnow()
+            )
+            db.add(student)
+            db.commit()
+        except Exception as e:
+            print(f"Error creating student {username}: {e}")
+            db.rollback()
     
-    db.commit()
     return admin, teacher
 
 def create_demo_questions(db: Session, teacher_id: int):
