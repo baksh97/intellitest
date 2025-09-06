@@ -1,0 +1,553 @@
+{
+	"info": {
+		"_postman_id": "intellitest-api-collection",
+		"name": "IntelliTest API Collection",
+		"description": "Complete API collection for IntelliTest backend with authentication, user management, questions, tests, submissions, and monitoring endpoints.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://d5f4f6894432.ngrok-free.app",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login (Form Data)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login (JSON)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('access_token', response.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login-json",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login-json"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/me",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "me"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users (Admin Only)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/?skip=0&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", ""],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User (Admin Only)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"john_doe\",\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"password123\",\n    \"full_name\": \"John Doe\",\n    \"role\": \"student\",\n    \"class_name\": \"Class 10A\",\n    \"school_name\": \"Demo School\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User (Admin Only)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"full_name\": \"John Smith\",\n    \"class_name\": \"Class 10B\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User (Admin Only)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Questions",
+			"item": [
+				{
+					"name": "Get All Questions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/questions/?skip=0&limit=100&topic=Math&search=algebra",
+							"host": ["{{base_url}}"],
+							"path": ["api", "questions", ""],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "topic",
+									"value": "Math"
+								},
+								{
+									"key": "search",
+									"value": "algebra"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Question",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question_text\": \"What is the capital of France?\",\n    \"option_a\": \"London\",\n    \"option_b\": \"Berlin\",\n    \"option_c\": \"Paris\",\n    \"option_d\": \"Madrid\",\n    \"correct_answer\": \"c\",\n    \"topic\": \"Geography\",\n    \"difficulty_level\": \"easy\",\n    \"image_url\": null\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/questions/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "questions", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Question by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/questions/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "questions", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Question",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question_text\": \"What is the capital city of France?\",\n    \"difficulty_level\": \"medium\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/questions/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "questions", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Question",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/questions/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "questions", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tests",
+			"item": [
+				{
+					"name": "Get All Tests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tests/?skip=0&limit=100&is_live=true",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tests", ""],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "is_live",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Test",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Math Quiz - Chapter 1\",\n    \"description\": \"Basic mathematics quiz covering algebra and geometry\",\n    \"duration_minutes\": 30,\n    \"assigned_classes\": \"Class 10A,Class 10B\",\n    \"question_ids\": [1, 2, 3, 4, 5]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tests/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tests", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Test by ID (with Questions)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tests/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tests", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Test",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Math Quiz - Chapter 1 (Updated)\",\n    \"is_live\": true,\n    \"duration_minutes\": 45\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tests/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tests", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Test",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tests/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tests", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Submissions",
+			"item": [
+				{
+					"name": "Submit Test",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"test_id\": 1,\n    \"answers\": [\n        {\n            \"question_id\": 1,\n            \"selected_answer\": \"c\"\n        },\n        {\n            \"question_id\": 2,\n            \"selected_answer\": \"a\"\n        },\n        {\n            \"question_id\": 3,\n            \"selected_answer\": null\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/submissions/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "submissions", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Submissions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/submissions/my-submissions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "submissions", "my-submissions"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Test Submissions (Teacher/Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/submissions/test/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "submissions", "test", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Submission by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/submissions/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "submissions", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Monitoring",
+			"item": [
+				{
+					"name": "Get Live Tests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/monitoring/live-tests",
+							"host": ["{{base_url}}"],
+							"path": ["api", "monitoring", "live-tests"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Test Progress",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/monitoring/test/1/progress",
+							"host": ["{{base_url}}"],
+							"path": ["api", "monitoring", "test", "1", "progress"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Test Analytics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/monitoring/test/1/analytics",
+							"host": ["{{base_url}}"],
+							"path": ["api", "monitoring", "test", "1", "analytics"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Root Endpoint",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": ["{{base_url}}"],
+							"path": [""]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
