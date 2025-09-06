@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://d5f4f6894432.ngrok-free.app';
+export const API_BASE_URL = 'https://intellitest-backend-j2z6.onrender.com';
 
 export const API_ENDPOINTS = {
   // Auth
